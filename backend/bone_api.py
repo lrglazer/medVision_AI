@@ -190,7 +190,7 @@ def analyze(image: Image.Image):
     body_part, body_part_score, body_part_predictions = detect_body_part(tensor)
     abnormality_score = predict_abnormality(tensor)
     status, threshold = classify(abnormality_score)
-    overlay = make_gradcam(array, tensor)
+    overlay = np.asarray(image.convert("RGB"))
 
     if status == "Positive model finding":
         interpretation = (
@@ -233,25 +233,14 @@ def bone_health():
 
 @router.post("/predict")
 async def predict_bone(file: UploadFile = File(...)):
-    print("BONE ENDPOINT FILE:", __file__)
+    
     if file.content_type not in {"image/png", "image/jpeg"}:
         raise HTTPException(status_code=400, detail="Upload a PNG or JPEG X-ray.")
 
     try:
         image = Image.open(io.BytesIO(await file.read()))
         validation = BONE_VALIDATOR.evaluate(image)
-        print(
-    "BONE VALIDATOR:",
-    "accepted =", validation.accepted,
-    "score =", validation.score,
-    "threshold =", validation.threshold,
-)
-        print(
-    "accepted:",
-    validation.accepted,
-    "score:",
-    validation.score,
-)
+      
         if not validation.accepted:
             raise HTTPException(
                 status_code=422,
