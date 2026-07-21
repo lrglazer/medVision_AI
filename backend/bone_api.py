@@ -186,11 +186,14 @@ def encode_png(array: np.ndarray) -> str:
 
 
 def analyze(image: Image.Image):
-    _, array, tensor = prepare_image(image)
+    resized, array, tensor = prepare_image(image)
+
     body_part, body_part_score, body_part_predictions = detect_body_part(tensor)
     abnormality_score = predict_abnormality(tensor)
     status, threshold = classify(abnormality_score)
-    overlay = np.asarray(image.convert("RGB"))
+
+    # Temporary lightweight replacement for Grad-CAM
+    overlay = np.asarray(resized).astype(np.uint8)
 
     if status == "Positive model finding":
         interpretation = (
