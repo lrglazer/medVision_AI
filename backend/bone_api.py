@@ -251,6 +251,9 @@ async def predict_bone(file: UploadFile = File(...)):
                     "shoulder, or wrist radiograph."
                 ),
             )
+
+        print("BONE API VERSION: NO GRADCAM")
+        
         result = analyze(image)
 
         return {
