@@ -47,7 +47,13 @@ app.include_router(bone_router)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=r"http://(localhost|127\.0\.0\.1):\d+",
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "https://medvisionai.app",
+        "https://www.medvisionai.app",
+        "https://med-vision-ai-htvv-nu.vercel.app",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
