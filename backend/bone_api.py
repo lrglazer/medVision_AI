@@ -238,9 +238,14 @@ async def predict_bone(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail="Upload a PNG or JPEG X-ray.")
 
     try:
+        print("BONE: request received", flush=True)
+
         image = Image.open(io.BytesIO(await file.read()))
+
+        print("BONE: validator starting", flush=True)
         validation = BONE_VALIDATOR.evaluate(image)
-      
+        print("BONE: validator finished", flush=True)
+
         if not validation.accepted:
             raise HTTPException(
                 status_code=422,
@@ -252,9 +257,11 @@ async def predict_bone(file: UploadFile = File(...)):
                 ),
             )
 
-        print("BONE API VERSION: NO GRADCAM")
-        
+        print("BONE: analysis starting", flush=True)
         result = analyze(image)
+        print("BONE: analysis finished", flush=True)
+
+        print("BONE: returning response", flush=True)
 
         return {
             "filename": file.filename,
