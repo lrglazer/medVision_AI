@@ -7,3 +7,5 @@ numpy
 Pillow
 grad-cam==1.5.5
 opencv-python-headless
+reportlab
+open_clip_torch
