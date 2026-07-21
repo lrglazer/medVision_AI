@@ -1,0 +1,62 @@
+{
+  "model_version": "chest_v2",
+  "architecture": "densenet121_dual_head",
+  "normal_gate": {
+    "No Finding": {
+      "threshold": 0.5,
+      "negative_max": 0.45,
+      "positive_min": 0.55,
+      "method": "validation"
+    }
+  },
+  "findings": {
+    "Cardiomegaly": {
+      "threshold": 0.545,
+      "negative_max": 0.49500000000000005,
+      "positive_min": 0.5950000000000001,
+      "method": "validation"
+    },
+    "Lung Opacity": {
+      "threshold": 0.925,
+      "negative_max": 0.875,
+      "positive_min": 0.9750000000000001,
+      "method": "validation"
+    },
+    "Pneumonia": {
+      "threshold": 0.9,
+      "negative_max": 0.85,
+      "positive_min": 0.9500000000000001,
+      "method": "fallback"
+    },
+    "Consolidation": {
+      "threshold": 0.445,
+      "negative_max": 0.395,
+      "positive_min": 0.495,
+      "method": "validation"
+    },
+    "Edema": {
+      "threshold": 0.92,
+      "negative_max": 0.87,
+      "positive_min": 0.9700000000000001,
+      "method": "validation"
+    },
+    "Pleural Effusion": {
+      "threshold": 0.79,
+      "negative_max": 0.74,
+      "positive_min": 0.8400000000000001,
+      "method": "validation"
+    },
+    "Pneumothorax": {
+      "threshold": 0.9,
+      "negative_max": 0.85,
+      "positive_min": 0.9500000000000001,
+      "method": "fallback"
+    },
+    "Atelectasis": {
+      "threshold": 0.9,
+      "negative_max": 0.85,
+      "positive_min": 0.9500000000000001,
+      "method": "specificity_fallback"
+    }
+  }
+}

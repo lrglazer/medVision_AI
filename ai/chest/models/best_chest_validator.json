@@ -1,0 +1,11 @@
+{
+  "image_size": 224,
+  "threshold": 0.9273022413253784,
+  "validation_auc": 1.0,
+  "validation_accuracy": 1.0,
+  "validation_precision": 1.0,
+  "validation_sensitivity": 1.0,
+  "validation_specificity": 1.0,
+  "positive_class": "chest_xray",
+  "negative_class": "not_chest_xray"
+}

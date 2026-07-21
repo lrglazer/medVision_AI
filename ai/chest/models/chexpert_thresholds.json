@@ -1,0 +1,106 @@
+{
+  "No Finding": {
+    "threshold": 0.9,
+    "negative_max": 0.85,
+    "positive_min": 0.9500000000000001,
+    "method": "specificity_fallback",
+    "validation_positives": 26,
+    "validation_negatives": 176
+  },
+  "Enlarged Cardiomediastinum": {
+    "threshold": 0.515,
+    "negative_max": 0.465,
+    "positive_min": 0.5650000000000001,
+    "method": "validation_f1_with_specificity_floor",
+    "validation_positives": 105,
+    "validation_negatives": 97
+  },
+  "Cardiomegaly": {
+    "threshold": 0.435,
+    "negative_max": 0.385,
+    "positive_min": 0.485,
+    "method": "validation_f1_with_specificity_floor",
+    "validation_positives": 66,
+    "validation_negatives": 136
+  },
+  "Lung Opacity": {
+    "threshold": 0.9500000000000001,
+    "negative_max": 0.9,
+    "positive_min": 1.0,
+    "method": "validation_f1_with_specificity_floor",
+    "validation_positives": 117,
+    "validation_negatives": 85
+  },
+  "Lung Lesion": {
+    "threshold": 0.9,
+    "negative_max": 0.85,
+    "positive_min": 0.9500000000000001,
+    "method": "conservative_fallback",
+    "validation_positives": 1,
+    "validation_negatives": 201
+  },
+  "Edema": {
+    "threshold": 0.925,
+    "negative_max": 0.875,
+    "positive_min": 0.9750000000000001,
+    "method": "validation_f1_with_specificity_floor",
+    "validation_positives": 42,
+    "validation_negatives": 160
+  },
+  "Consolidation": {
+    "threshold": 0.40499999999999997,
+    "negative_max": 0.355,
+    "positive_min": 0.45499999999999996,
+    "method": "validation_f1_with_specificity_floor",
+    "validation_positives": 32,
+    "validation_negatives": 170
+  },
+  "Pneumonia": {
+    "threshold": 0.9,
+    "negative_max": 0.85,
+    "positive_min": 0.9500000000000001,
+    "method": "conservative_fallback",
+    "validation_positives": 8,
+    "validation_negatives": 194
+  },
+  "Atelectasis": {
+    "threshold": 0.9,
+    "negative_max": 0.85,
+    "positive_min": 0.9500000000000001,
+    "method": "specificity_fallback",
+    "validation_positives": 75,
+    "validation_negatives": 127
+  },
+  "Pneumothorax": {
+    "threshold": 0.9,
+    "negative_max": 0.85,
+    "positive_min": 0.9500000000000001,
+    "method": "conservative_fallback",
+    "validation_positives": 7,
+    "validation_negatives": 195
+  },
+  "Pleural Effusion": {
+    "threshold": 0.77,
+    "negative_max": 0.72,
+    "positive_min": 0.8200000000000001,
+    "method": "validation_f1_with_specificity_floor",
+    "validation_positives": 64,
+    "validation_negatives": 138
+  },
+  "Pleural Other": {
+    "threshold": 0.9,
+    "negative_max": 0.85,
+    "positive_min": 0.9500000000000001,
+    "method": "conservative_fallback",
+    "validation_positives": 1,
+    "validation_negatives": 201
+  },
+  "Support Devices": {
+    "threshold": 0.9650000000000001,
+    "negative_max": 0.915,
+    "positive_min": 1.0,
+    "method": "validation_f1_with_specificity_floor",
+    "validation_positives": 99,
+    "validation_negatives": 103
+  }
+}

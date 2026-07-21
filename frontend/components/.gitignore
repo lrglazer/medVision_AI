@@ -1,0 +1,93 @@
+# ==========================
+# Python
+# ==========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+**/.venv/
+
+# ==========================
+# PyTorch models
+# ==========================
+*.pt
+*.pth
+*.ckpt
+
+# Model folders
+models/
+models_v2/
+
+# ==========================
+# Datasets
+# ==========================
+datasets/
+data/
+CheXpert/
+ChestXray14/
+NIH/
+
+# ==========================
+# Environment variables
+# ==========================
+.env
+.env.local
+.env.*
+
+# ==========================
+# Node / Next.js
+# ==========================
+node_modules/
+.next/
+out/
+dist/
+
+# npm logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ==========================
+# VS Code
+# ==========================
+.vscode/
+
+# ==========================
+# macOS / Windows
+# ==========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ==========================
+# Reports / generated files
+# ==========================
+reports/*.pdf
+reports/*.png
+
+# ==========================
+# Temporary training outputs
+# ==========================
+runs/
+wandb/
+logs/
+*.log
+
+# ==========================
+# Old patch folders
+# ==========================
+MedVision_input_validation_patch/
+MedVision_local_validator_complete/
+MedVision_remove_learn_patch/
+MedVision_trained_validators/
+
+# ==========================
+# IDE caches
+# ==========================
+.idea/
+*.swp

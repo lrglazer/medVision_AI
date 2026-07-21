@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+**/.venv/
+
+# Models
+*.pt
+*.pth
+
+# Datasets
+datasets/
+
+# Node
+node_modules/
+.next/
+
+# Environment
+.env
+.env.local
+
+# Reports
+reports/
+
+# Ignore old project copies
+MedVision_input_validation_patch/
+MedVision_local_validator_complete/
+MedVision_remove_learn_patch/
+MedVision_trained_validators/

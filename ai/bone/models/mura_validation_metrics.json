@@ -1,0 +1,12 @@
+{
+  "auc": 0.8706086233733645,
+  "threshold": 0.5118623971939087,
+  "precision": 0.8382352941176471,
+  "sensitivity": 0.7450980392156863,
+  "specificity": 0.8680263947210558,
+  "f1": 0.7889273356401384,
+  "true_positive": 1140,
+  "true_negative": 1447,
+  "false_positive": 220,
+  "false_negative": 390
+}

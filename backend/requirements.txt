@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+python-multipart
+torch
+torchvision
+numpy
+Pillow
+grad-cam==1.5.5
+opencv-python-headless
