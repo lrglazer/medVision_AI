@@ -9,21 +9,17 @@
     "lint": "next lint"
   },
   "dependencies": {
-  "@types/node": "latest",
-  "@types/react": "latest",
-  "@types/react-dom": "latest",
-  "lucide-react": "^1.24.0",
-  "next": "latest",
-  "react": "latest",
-  "react-dom": "latest",
-  "typescript": "7.0.2"
-}
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "lucide-react": "^1.24.0",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "typescript": "7.0.2"
+  },
   "devDependencies": {
     "@tailwindcss/postcss": "latest",
-    "@types/node": "^26.1.1",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
-    "tailwindcss": "latest",
-    "typescript": "^7.0.2"
+    "tailwindcss": "latest"
   }
 }
