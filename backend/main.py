@@ -81,7 +81,6 @@ THRESHOLDS_PATH = (
 )
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-IMAGE_SIZE = 224
 
 
 def env_flag(name: str, default: bool) -> bool:
@@ -99,6 +98,7 @@ SKIP_CHEST_GRADCAM = env_flag(
     "MEDVISION_SKIP_CHEST_GRADCAM",
     True,
 )
+IMAGE_SIZE = int(os.getenv("MEDVISION_CHEST_IMAGE_SIZE", "160"))
 
 NORMAL_LABEL = "No Finding"
 
@@ -1118,6 +1118,7 @@ def health() -> dict[str, Any]:
         "pdf_reports": True,
         "skip_chest_validator": SKIP_CHEST_VALIDATOR,
         "skip_chest_gradcam": SKIP_CHEST_GRADCAM,
+        "chest_image_size": IMAGE_SIZE,
     }
 
 

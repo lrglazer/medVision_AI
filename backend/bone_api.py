@@ -49,6 +49,10 @@ SKIP_BONE_VALIDATOR = env_flag(
     "MEDVISION_SKIP_BONE_VALIDATOR",
     True,
 )
+SKIP_BONE_BODY_PART_MODEL = env_flag(
+    "MEDVISION_SKIP_BONE_BODY_PART_MODEL",
+    True,
+)
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -106,6 +110,7 @@ def load_models():
     ABNORMALITY_AUC,
     BODY_PART_ACCURACY,
 ) = load_models()
+IMAGE_SIZE = int(os.getenv("MEDVISION_BONE_IMAGE_SIZE", "160"))
 
 THRESHOLD_CONFIG = load_json(THRESHOLD_PATH)
 ABNORMALITY_METRICS = load_json(ABNORMALITY_METRICS_PATH)
@@ -211,13 +216,25 @@ def analyze(image: Image.Image):
         flush=True,
     )
 
-    start = time.time()
-    print("BONE ANALYZE: body-part model starting", flush=True)
-    body_part, body_part_score, body_part_predictions = detect_body_part(tensor)
-    print(
-        f"BONE ANALYZE: body-part model finished in {time.time() - start:.2f}s",
-        flush=True,
-    )
+    if SKIP_BONE_BODY_PART_MODEL:
+        body_part = "Musculoskeletal"
+        body_part_score = 1.0
+        body_part_predictions = [
+            {
+                "name": "Musculoskeletal",
+                "score": 1.0,
+                "display_score": "100.0%",
+            }
+        ]
+        print("BONE ANALYZE: fast mode skipping body-part model", flush=True)
+    else:
+        start = time.time()
+        print("BONE ANALYZE: body-part model starting", flush=True)
+        body_part, body_part_score, body_part_predictions = detect_body_part(tensor)
+        print(
+            f"BONE ANALYZE: body-part model finished in {time.time() - start:.2f}s",
+            flush=True,
+        )
 
     start = time.time()
     print("BONE ANALYZE: abnormality model starting", flush=True)
@@ -273,6 +290,8 @@ def bone_health():
         "abnormality_auc": ABNORMALITY_AUC,
         "classes": BODY_PART_CLASSES,
         "skip_bone_validator": SKIP_BONE_VALIDATOR,
+        "skip_bone_body_part_model": SKIP_BONE_BODY_PART_MODEL,
+        "bone_image_size": IMAGE_SIZE,
     }
 
 
