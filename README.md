@@ -57,7 +57,8 @@ Grad-CAM
 Deployment
 Vercel (Frontend)
 Railway (Backend)
-Repository Structure
+
+Repository Structure:
 frontend/
     Next.js application
 
@@ -74,7 +75,8 @@ ai/
 
 models/
     Trained model weights
-Example Workflow
+    
+Example Workflow:
 Upload a chest or bone X-ray.
 The image is validated.
 The appropriate AI model performs inference.
@@ -96,17 +98,14 @@ Cloud-based model optimization
 Installation
 
 Clone the repository:
-
 git clone https://github.com/lrglazer/medVision_AI.git
 
 Install frontend:
-
 cd frontend
 npm install
 npm run dev
 
 Install backend:
-
 cd backend
 pip install -r requirements.txt
 uvicorn main:app --reload
