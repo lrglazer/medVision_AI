@@ -36,6 +36,9 @@ BODY_PART_METRICS_PATH = MODELS_DIR / "mura_body_part_metrics.json"
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 DEFAULT_IMAGE_SIZE = 320
+IS_RAILWAY = bool(os.getenv("RAILWAY_ENVIRONMENT")) or bool(
+    os.getenv("RAILWAY_PROJECT_ID")
+)
 
 
 def env_flag(name: str, default: bool) -> bool:
@@ -51,7 +54,7 @@ SKIP_BONE_VALIDATOR = env_flag(
 )
 SKIP_BONE_BODY_PART_MODEL = env_flag(
     "MEDVISION_SKIP_BONE_BODY_PART_MODEL",
-    False,
+    IS_RAILWAY,
 )
 
 
@@ -110,7 +113,20 @@ def load_models():
     ABNORMALITY_AUC,
     BODY_PART_ACCURACY,
 ) = load_models()
-IMAGE_SIZE = int(os.getenv("MEDVISION_BONE_IMAGE_SIZE", "160"))
+IMAGE_SIZE = int(
+    os.getenv(
+        "MEDVISION_BONE_IMAGE_SIZE",
+        "128" if IS_RAILWAY else str(IMAGE_SIZE),
+    )
+)
+
+if DEVICE.type == "cpu":
+    torch.set_num_threads(
+        int(os.getenv("MEDVISION_TORCH_THREADS", "1"))
+    )
+    torch.set_num_interop_threads(
+        int(os.getenv("MEDVISION_TORCH_INTEROP_THREADS", "1"))
+    )
 
 THRESHOLD_CONFIG = load_json(THRESHOLD_PATH)
 ABNORMALITY_METRICS = load_json(ABNORMALITY_METRICS_PATH)
@@ -142,7 +158,7 @@ def prepare_image(image: Image.Image):
 
 
 def detect_body_part(tensor: torch.Tensor):
-    with torch.no_grad():
+    with torch.inference_mode():
         probabilities = torch.softmax(body_part_model(tensor), dim=1)[0]
 
     top_score, top_index = torch.max(probabilities, dim=0)
@@ -164,7 +180,7 @@ def detect_body_part(tensor: torch.Tensor):
 
 
 def predict_abnormality(tensor: torch.Tensor) -> float:
-    with torch.no_grad():
+    with torch.inference_mode():
         return float(torch.sigmoid(abnormality_model(tensor)).item())
 
 

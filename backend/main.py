@@ -81,6 +81,9 @@ THRESHOLDS_PATH = (
 )
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+IS_RAILWAY = bool(os.getenv("RAILWAY_ENVIRONMENT")) or bool(
+    os.getenv("RAILWAY_PROJECT_ID")
+)
 
 
 def env_flag(name: str, default: bool) -> bool:
@@ -96,9 +99,22 @@ SKIP_CHEST_VALIDATOR = env_flag(
 )
 SKIP_CHEST_GRADCAM = env_flag(
     "MEDVISION_SKIP_CHEST_GRADCAM",
-    True,
+    IS_RAILWAY,
 )
-IMAGE_SIZE = int(os.getenv("MEDVISION_CHEST_IMAGE_SIZE", "160"))
+IMAGE_SIZE = int(
+    os.getenv(
+        "MEDVISION_CHEST_IMAGE_SIZE",
+        "128" if IS_RAILWAY else "224",
+    )
+)
+
+if DEVICE.type == "cpu":
+    torch.set_num_threads(
+        int(os.getenv("MEDVISION_TORCH_THREADS", "1"))
+    )
+    torch.set_num_interop_threads(
+        int(os.getenv("MEDVISION_TORCH_INTEROP_THREADS", "1"))
+    )
 
 NORMAL_LABEL = "No Finding"
 
@@ -320,7 +336,7 @@ def get_probabilities(
     input_tensor: torch.Tensor,
 ) -> tuple[float, np.ndarray]:
 
-    with torch.no_grad():
+    with torch.inference_mode():
         normal_logits, finding_logits = model(input_tensor)
 
         normal_probability = torch.sigmoid(normal_logits)
