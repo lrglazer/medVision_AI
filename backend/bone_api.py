@@ -3,6 +3,7 @@ from __future__ import annotations
 import base64
 import io
 import json
+import time
 from pathlib import Path
 from typing import Any
 
@@ -188,9 +189,17 @@ def encode_png(array: np.ndarray) -> str:
 def analyze(image: Image.Image):
     resized, array, tensor = prepare_image(image)
 
+    start = time.time()
     body_part, body_part_score, body_part_predictions = detect_body_part(tensor)
+    print(f"Body part: {time.time() - start:.2f}s")
+
+    start = time.time()
     abnormality_score = predict_abnormality(tensor)
+    print(f"Abnormality: {time.time() - start:.2f}s")
+
+    start = time.time()
     status, threshold = classify(abnormality_score)
+    print(f"Classify: {time.time() - start:.2f}s")
 
     # Temporary lightweight replacement for Grad-CAM
     overlay = np.asarray(resized).astype(np.uint8)
