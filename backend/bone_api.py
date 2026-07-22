@@ -359,3 +359,11 @@ async def predict_bone(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail="Invalid image file.") from error
     except Exception as error:
         raise HTTPException(status_code=500, detail=str(error)) from error
+
+
+@router.post("/report")
+async def download_bone_report(file: UploadFile = File(...)):
+    raise HTTPException(
+        status_code=501,
+        detail="PDF report generation for bone X-rays is not yet implemented.",
+    )

@@ -96,21 +96,30 @@ export default function BoneAnalyzer() {
     setIsAnalyzing(true);
     setError(null);
 
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 300000);
+
     try {
       const formData = new FormData();
       formData.append("file", selectedFile);
       const response = await fetch(`${API_URL}/api/bone/predict`, {
         method: "POST",
         body: formData,
+        signal: controller.signal,
       });
       const payload = await response.json();
       if (!response.ok) throw new Error(payload?.detail ?? "Analysis failed.");
       setResult(payload as BoneResult);
     } catch (caughtError) {
-      setError(
-        caughtError instanceof Error ? caughtError.message : "Analysis failed."
-      );
+      const errorMessage =
+        caughtError instanceof Error
+          ? caughtError.name === "AbortError"
+            ? "Request timed out. Please try again."
+            : caughtError.message
+          : "Analysis failed.";
+      setError(errorMessage);
     } finally {
+      clearTimeout(timeout);
       setIsAnalyzing(false);
     }
   }
@@ -120,12 +129,16 @@ export default function BoneAnalyzer() {
     setIsDownloading(true);
     setError(null);
 
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 600000);
+
     try {
       const formData = new FormData();
       formData.append("file", selectedFile);
       const response = await fetch(`${API_URL}/api/bone/report`, {
         method: "POST",
         body: formData,
+        signal: controller.signal,
       });
       if (!response.ok) {
         const payload = await response.json().catch(() => null);
@@ -141,12 +154,15 @@ export default function BoneAnalyzer() {
       anchor.remove();
       URL.revokeObjectURL(url);
     } catch (caughtError) {
-      setError(
+      const errorMessage =
         caughtError instanceof Error
-          ? caughtError.message
-          : "Report download failed."
-      );
+          ? caughtError.name === "AbortError"
+            ? "Report download timed out. Please try again."
+            : caughtError.message
+          : "Report download failed.";
+      setError(errorMessage);
     } finally {
+      clearTimeout(timeout);
       setIsDownloading(false);
     }
   }
