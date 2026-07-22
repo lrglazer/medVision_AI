@@ -54,6 +54,7 @@ app.add_middleware(
         "https://www.medvisionai.app",
         "https://med-vision-ai-htvv-nu.vercel.app",
     ],
+    allow_origin_regex=r"https://med-vision-.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
