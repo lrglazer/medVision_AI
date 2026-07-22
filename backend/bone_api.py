@@ -45,12 +45,9 @@ def env_flag(name: str, default: bool) -> bool:
     return value.strip().lower() in {"1", "true", "yes", "on"}
 
 
-IS_RAILWAY = bool(os.getenv("RAILWAY_ENVIRONMENT")) or bool(
-    os.getenv("RAILWAY_PROJECT_ID")
-)
 SKIP_BONE_VALIDATOR = env_flag(
     "MEDVISION_SKIP_BONE_VALIDATOR",
-    IS_RAILWAY,
+    True,
 )
 
 
@@ -275,6 +272,7 @@ def bone_health():
         "body_part_accuracy": BODY_PART_ACCURACY,
         "abnormality_auc": ABNORMALITY_AUC,
         "classes": BODY_PART_CLASSES,
+        "skip_bone_validator": SKIP_BONE_VALIDATOR,
     }
 
 

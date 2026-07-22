@@ -91,16 +91,13 @@ def env_flag(name: str, default: bool) -> bool:
     return value.strip().lower() in {"1", "true", "yes", "on"}
 
 
-IS_RAILWAY = bool(os.getenv("RAILWAY_ENVIRONMENT")) or bool(
-    os.getenv("RAILWAY_PROJECT_ID")
-)
 SKIP_CHEST_VALIDATOR = env_flag(
     "MEDVISION_SKIP_CHEST_VALIDATOR",
-    IS_RAILWAY,
+    True,
 )
 SKIP_CHEST_GRADCAM = env_flag(
     "MEDVISION_SKIP_CHEST_GRADCAM",
-    IS_RAILWAY,
+    True,
 )
 
 NORMAL_LABEL = "No Finding"
@@ -1119,6 +1116,8 @@ def health() -> dict[str, Any]:
         "labels": len(FINDING_LABELS),
         "validation_combined_auc": VALIDATION_COMBINED_AUC,
         "pdf_reports": True,
+        "skip_chest_validator": SKIP_CHEST_VALIDATOR,
+        "skip_chest_gradcam": SKIP_CHEST_GRADCAM,
     }
 
 
