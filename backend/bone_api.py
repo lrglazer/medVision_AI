@@ -187,21 +187,33 @@ def encode_png(array: np.ndarray) -> str:
 
 
 def analyze(image: Image.Image):
+    total_start = time.time()
+
+    print("BONE ANALYZE: preparing image", flush=True)
     resized, array, tensor = prepare_image(image)
+    print(
+        f"BONE ANALYZE: prepare finished in {time.time() - total_start:.2f}s",
+        flush=True,
+    )
 
     start = time.time()
+    print("BONE ANALYZE: body-part model starting", flush=True)
     body_part, body_part_score, body_part_predictions = detect_body_part(tensor)
-    print(f"Body part: {time.time() - start:.2f}s")
+    print(
+        f"BONE ANALYZE: body-part model finished in {time.time() - start:.2f}s",
+        flush=True,
+    )
 
     start = time.time()
+    print("BONE ANALYZE: abnormality model starting", flush=True)
     abnormality_score = predict_abnormality(tensor)
-    print(f"Abnormality: {time.time() - start:.2f}s")
+    print(
+        f"BONE ANALYZE: abnormality model finished in {time.time() - start:.2f}s",
+        flush=True,
+    )
 
-    start = time.time()
     status, threshold = classify(abnormality_score)
-    print(f"Classify: {time.time() - start:.2f}s")
 
-    # Temporary lightweight replacement for Grad-CAM
     overlay = np.asarray(resized).astype(np.uint8)
 
     if status == "Positive model finding":
@@ -219,6 +231,11 @@ def analyze(image: Image.Image):
             f"The model did not identify a high abnormality output for this "
             f"{body_part.lower()} radiograph."
         )
+
+    print(
+        f"BONE ANALYZE: total finished in {time.time() - total_start:.2f}s",
+        flush=True,
+    )
 
     return {
         "body_part": body_part,
