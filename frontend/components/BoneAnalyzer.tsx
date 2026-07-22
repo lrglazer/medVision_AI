@@ -271,11 +271,24 @@ export default function BoneAnalyzer() {
               )}
             </button>
 
+            {isAnalyzing && (
+            <div className="mt-3 rounded-xl border border-violet-200 bg-violet-50 p-4">
+              <div className="flex items-center gap-2 text-sm font-semibold text-violet-900">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Analysis in progress
+              </div>
+              <p className="mt-1 text-sm text-violet-800">
+                Please keep this tab open. The first request can take a few
+                minutes.
+              </p>
+            </div>
+            )}
+
             {result && (
-              <button
-                type="button"
-                onClick={downloadReport}
-                disabled={isDownloading}
+            <button
+              type="button"
+              onClick={downloadReport}
+              disabled={isDownloading}
                 className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-3.5 font-semibold disabled:opacity-50"
               >
                 {isDownloading ? (
@@ -305,15 +318,25 @@ export default function BoneAnalyzer() {
         <div className="space-y-6">
           {!result ? (
             <div className="flex min-h-[520px] items-center justify-center rounded-[2rem] border border-slate-200 bg-white p-8 text-center shadow-sm">
-              <div>
-                <Bone className="mx-auto h-9 w-9 text-violet-700" />
-                <h2 className="mt-5 text-2xl font-semibold">
-                  Results will appear here
-                </h2>
-                <p className="mt-2 text-sm text-slate-500">
-                  Upload a supported musculoskeletal radiograph to begin.
-                </p>
-              </div>
+              {isAnalyzing ? (
+                <div>
+                  <Loader2 className="mx-auto h-10 w-10 animate-spin text-violet-700" />
+                  <h2 className="mt-5 text-2xl font-semibold">Analyzing image</h2>
+                  <p className="mt-2 text-sm text-slate-500">
+                    We are processing your X-ray. This may take a few minutes.
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  <Bone className="mx-auto h-9 w-9 text-violet-700" />
+                  <h2 className="mt-5 text-2xl font-semibold">
+                    Results will appear here
+                  </h2>
+                  <p className="mt-2 text-sm text-slate-500">
+                    Upload a supported musculoskeletal radiograph to begin.
+                  </p>
+                </div>
+              )}
             </div>
           ) : (
             <>
