@@ -92,7 +92,7 @@ def env_flag(name: str, default: bool) -> bool:
 
 SKIP_CHEST_VALIDATOR = env_flag(
     "MEDVISION_SKIP_CHEST_VALIDATOR",
-    True,
+    False,
 )
 SKIP_CHEST_GRADCAM = env_flag(
     "MEDVISION_SKIP_CHEST_GRADCAM",

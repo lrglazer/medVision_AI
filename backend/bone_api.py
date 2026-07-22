@@ -47,11 +47,11 @@ def env_flag(name: str, default: bool) -> bool:
 
 SKIP_BONE_VALIDATOR = env_flag(
     "MEDVISION_SKIP_BONE_VALIDATOR",
-    True,
+    False,
 )
 SKIP_BONE_BODY_PART_MODEL = env_flag(
     "MEDVISION_SKIP_BONE_BODY_PART_MODEL",
-    True,
+    False,
 )
 
 
