@@ -108,14 +108,6 @@ IMAGE_SIZE = int(
     )
 )
 
-if DEVICE.type == "cpu":
-    torch.set_num_threads(
-        int(os.getenv("MEDVISION_TORCH_THREADS", "1"))
-    )
-    torch.set_num_interop_threads(
-        int(os.getenv("MEDVISION_TORCH_INTEROP_THREADS", "1"))
-    )
-
 NORMAL_LABEL = "No Finding"
 
 FINDING_LABELS = [

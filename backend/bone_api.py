@@ -120,14 +120,6 @@ IMAGE_SIZE = int(
     )
 )
 
-if DEVICE.type == "cpu":
-    torch.set_num_threads(
-        int(os.getenv("MEDVISION_TORCH_THREADS", "1"))
-    )
-    torch.set_num_interop_threads(
-        int(os.getenv("MEDVISION_TORCH_INTEROP_THREADS", "1"))
-    )
-
 THRESHOLD_CONFIG = load_json(THRESHOLD_PATH)
 ABNORMALITY_METRICS = load_json(ABNORMALITY_METRICS_PATH)
 BODY_PART_METRICS = load_json(BODY_PART_METRICS_PATH)
