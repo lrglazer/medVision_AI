@@ -3,6 +3,7 @@ from __future__ import annotations
 import base64
 import io
 import json
+import os
 import time
 from pathlib import Path
 from typing import Any
@@ -19,6 +20,7 @@ from torchvision.models import densenet121
 
 from backend.study_validators import (
     BONE_VALIDATOR,
+    StudyValidation,
     ValidatorUnavailableError,
 )
 
@@ -34,6 +36,22 @@ BODY_PART_METRICS_PATH = MODELS_DIR / "mura_body_part_metrics.json"
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 DEFAULT_IMAGE_SIZE = 320
+
+
+def env_flag(name: str, default: bool) -> bool:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+IS_RAILWAY = bool(os.getenv("RAILWAY_ENVIRONMENT")) or bool(
+    os.getenv("RAILWAY_PROJECT_ID")
+)
+SKIP_BONE_VALIDATOR = env_flag(
+    "MEDVISION_SKIP_BONE_VALIDATOR",
+    IS_RAILWAY,
+)
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -271,9 +289,21 @@ async def predict_bone(file: UploadFile = File(...)):
 
         image = Image.open(io.BytesIO(await file.read()))
 
-        print("BONE: validator starting", flush=True)
-        validation = BONE_VALIDATOR.evaluate(image)
-        print("BONE: validator finished", flush=True)
+        if SKIP_BONE_VALIDATOR:
+            print("BONE: fast mode skipping input validator", flush=True)
+            validation = StudyValidation(
+                accepted=True,
+                score=1.0,
+                threshold=0.0,
+                display_score="100.0%",
+                validation_auc=0.0,
+                validation_accuracy=0.0,
+                validation_specificity=0.0,
+            )
+        else:
+            print("BONE: validator starting", flush=True)
+            validation = BONE_VALIDATOR.evaluate(image)
+            print("BONE: validator finished", flush=True)
 
         if not validation.accepted:
             raise HTTPException(

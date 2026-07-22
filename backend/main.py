@@ -3,6 +3,7 @@ from __future__ import annotations
 import base64
 import io
 import json
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -37,6 +38,7 @@ from torchvision.models import densenet121
 from backend.bone_api import router as bone_router
 from backend.study_validators import (
     CHEST_VALIDATOR,
+    StudyValidation,
     ValidatorUnavailableError,
 )
 
@@ -80,6 +82,26 @@ THRESHOLDS_PATH = (
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 IMAGE_SIZE = 224
+
+
+def env_flag(name: str, default: bool) -> bool:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+IS_RAILWAY = bool(os.getenv("RAILWAY_ENVIRONMENT")) or bool(
+    os.getenv("RAILWAY_PROJECT_ID")
+)
+SKIP_CHEST_VALIDATOR = env_flag(
+    "MEDVISION_SKIP_CHEST_VALIDATOR",
+    IS_RAILWAY,
+)
+SKIP_CHEST_GRADCAM = env_flag(
+    "MEDVISION_SKIP_CHEST_GRADCAM",
+    IS_RAILWAY,
+)
 
 NORMAL_LABEL = "No Finding"
 
@@ -1049,15 +1071,19 @@ def analyze_uploaded_image(
         flush=True,
     )
 
-    gradcam_index = FINDING_LABELS.index(
-        gradcam_finding["name"]
-    )
+    if SKIP_CHEST_GRADCAM:
+        print("CHEST V2: fast mode skipping Grad-CAM", flush=True)
+        overlay = np.asarray(resized_image).astype(np.uint8)
+    else:
+        gradcam_index = FINDING_LABELS.index(
+            gradcam_finding["name"]
+        )
 
-    overlay = create_gradcam_overlay(
-        image_array,
-        input_tensor,
-        gradcam_index,
-    )
+        overlay = create_gradcam_overlay(
+            image_array,
+            input_tensor,
+            gradcam_index,
+        )
 
     print(
         "CHEST V2: analysis complete",
@@ -1108,7 +1134,19 @@ async def predict_chest(
 
     try:
         image = Image.open(io.BytesIO(await file.read()))
-        validation = CHEST_VALIDATOR.evaluate(image)
+        if SKIP_CHEST_VALIDATOR:
+            print("CHEST V2: fast mode skipping input validator", flush=True)
+            validation = StudyValidation(
+                accepted=True,
+                score=1.0,
+                threshold=0.0,
+                display_score="100.0%",
+                validation_auc=0.0,
+                validation_accuracy=0.0,
+                validation_specificity=0.0,
+            )
+        else:
+            validation = CHEST_VALIDATOR.evaluate(image)
         if not validation.accepted:
             raise HTTPException(
                 status_code=422,
