@@ -99,14 +99,10 @@ SKIP_CHEST_VALIDATOR = env_flag(
 )
 SKIP_CHEST_GRADCAM = env_flag(
     "MEDVISION_SKIP_CHEST_GRADCAM",
-    IS_RAILWAY,
+    False,
 )
-IMAGE_SIZE = int(
-    os.getenv(
-        "MEDVISION_CHEST_IMAGE_SIZE",
-        "128" if IS_RAILWAY else "224",
-    )
-)
+# The chest model was trained at 224 px; serving it smaller hurts accuracy.
+IMAGE_SIZE = int(os.getenv("MEDVISION_CHEST_IMAGE_SIZE", "224"))
 
 NORMAL_LABEL = "No Finding"
 
@@ -1076,19 +1072,21 @@ def analyze_uploaded_image(
         flush=True,
     )
 
+    overlay = np.asarray(resized_image).astype(np.uint8)
     if SKIP_CHEST_GRADCAM:
         print("CHEST V2: fast mode skipping Grad-CAM", flush=True)
-        overlay = np.asarray(resized_image).astype(np.uint8)
     else:
-        gradcam_index = FINDING_LABELS.index(
-            gradcam_finding["name"]
-        )
-
-        overlay = create_gradcam_overlay(
-            image_array,
-            input_tensor,
-            gradcam_index,
-        )
+        try:
+            gradcam_index = FINDING_LABELS.index(
+                gradcam_finding["name"]
+            )
+            overlay = create_gradcam_overlay(
+                image_array,
+                input_tensor,
+                gradcam_index,
+            )
+        except Exception as error:  # keep the result even if Grad-CAM fails
+            print(f"CHEST V2: Grad-CAM failed: {error}", flush=True)
 
     print(
         "CHEST V2: analysis complete",

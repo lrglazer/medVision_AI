@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, DragEvent, useState } from "react";
+import { ChangeEvent, DragEvent, useEffect, useState } from "react";
 import {
   AlertCircle,
   Bone,
@@ -13,6 +13,8 @@ import {
   ShieldAlert,
   UploadCloud,
 } from "lucide-react";
+import ModelStatus from "./ModelStatus";
+import { HandXray } from "./XrayArt";
 
 type BoneResult = {
   study: {
@@ -62,6 +64,18 @@ export default function BoneAnalyzer() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [elapsed, setElapsed] = useState(0);
+
+  useEffect(() => {
+    if (!isAnalyzing) return;
+    setElapsed(0);
+    const started = Date.now();
+    const timer = setInterval(
+      () => setElapsed(Math.round((Date.now() - started) / 1000)),
+      1000,
+    );
+    return () => clearInterval(timer);
+  }, [isAnalyzing]);
 
   function chooseFile(file: File) {
     if (!["image/png", "image/jpeg"].includes(file.type)) {
@@ -182,13 +196,16 @@ export default function BoneAnalyzer() {
   return (
     <section className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-9 max-w-3xl">
-        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-violet-700">
-          Bone X-ray Analysis
-        </p>
+        <div className="flex flex-wrap items-center gap-3">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-sky-300">
+            Bone X-ray Analysis
+          </p>
+          <ModelStatus compact />
+        </div>
         <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
           Automatic musculoskeletal X-ray analysis
         </h1>
-        <p className="mt-4 text-lg leading-8 text-slate-600">
+        <p className="mt-4 text-lg leading-8 text-slate-300">
           Upload a supported radiograph to detect the body region, estimate
           normal-versus-abnormal appearance, and generate Grad-CAM.
         </p>
@@ -196,7 +213,7 @@ export default function BoneAnalyzer() {
 
       <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="space-y-5">
-          <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="fade-up rounded-[2rem] border border-white/10 bg-white/[0.03] p-6 shadow-sm">
             <div
               onDragEnter={(event) => {
                 event.preventDefault();
@@ -205,10 +222,10 @@ export default function BoneAnalyzer() {
               onDragOver={(event) => event.preventDefault()}
               onDragLeave={() => setIsDragging(false)}
               onDrop={handleDrop}
-              className={`flex min-h-72 flex-col items-center justify-center rounded-2xl border-2 border-dashed p-6 text-center transition ${
+              className={`relative flex min-h-72 flex-col overflow-hidden items-center justify-center rounded-2xl border-2 border-dashed p-6 text-center transition ${
                 isDragging
-                  ? "border-violet-500 bg-violet-50"
-                  : "border-slate-300 bg-slate-50"
+                  ? "border-sky-400 bg-sky-400/10"
+                  : "border-white/15 bg-white/[0.04]"
               }`}
             >
               {previewUrl ? (
@@ -219,13 +236,14 @@ export default function BoneAnalyzer() {
                 />
               ) : (
                 <>
-                  <UploadCloud className="h-9 w-9 text-violet-700" />
+                  <UploadCloud className="h-9 w-9 text-sky-300" />
                   <p className="mt-4 font-medium">Drag and drop a PNG or JPEG</p>
-                  <p className="mt-1 text-sm text-slate-500">Maximum size: 12 MB</p>
+                  <p className="mt-1 text-sm text-slate-400">Maximum size: 12 MB</p>
                 </>
               )}
+              {previewUrl && isAnalyzing && <div className="scan-line" />}
 
-              <label className="mt-5 inline-flex cursor-pointer items-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white">
+              <label className="mt-5 inline-flex cursor-pointer items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-slate-200">
                 <FileImage className="h-4 w-4" />
                 Choose image
                 <input
@@ -238,16 +256,16 @@ export default function BoneAnalyzer() {
             </div>
 
             {selectedFile && (
-              <div className="mt-4 flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
+              <div className="mt-4 flex items-center justify-between rounded-xl bg-white/[0.04] px-4 py-3">
                 <p className="truncate text-sm font-medium">{selectedFile.name}</p>
                 <button type="button" onClick={reset} aria-label="Reset">
-                  <RotateCcw className="h-4 w-4 text-slate-500" />
+                  <RotateCcw className="h-4 w-4 text-slate-400" />
                 </button>
               </div>
             )}
 
             {error && (
-              <div className="mt-4 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
+              <div className="mt-4 rounded-xl border border-rose-400/30 bg-rose-500/10 p-4 text-sm text-rose-200">
                 {error}
               </div>
             )}
@@ -256,7 +274,7 @@ export default function BoneAnalyzer() {
               type="button"
               onClick={analyzeImage}
               disabled={!selectedFile || isAnalyzing}
-              className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-violet-700 px-5 py-3.5 font-semibold text-white disabled:opacity-50"
+              className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-sky-500 to-violet-500 px-5 py-3.5 font-semibold text-white shadow-[0_10px_40px_-12px_rgba(56,189,248,0.7)] disabled:opacity-50"
             >
               {isAnalyzing ? (
                 <>
@@ -272,43 +290,26 @@ export default function BoneAnalyzer() {
             </button>
 
             {isAnalyzing && (
-            <div className="mt-3 rounded-xl border border-violet-200 bg-violet-50 p-4">
-              <div className="flex items-center gap-2 text-sm font-semibold text-violet-900">
+            <div className="mt-3 rounded-xl border border-violet-400/30 bg-violet-500/10 p-4">
+              <div className="flex items-center gap-2 text-sm font-semibold text-violet-100">
                 <Loader2 className="h-4 w-4 animate-spin" />
                 Analysis in progress
+                <span className="ml-auto font-mono text-xs text-violet-200">
+                  {elapsed}s
+                </span>
               </div>
-              <p className="mt-1 text-sm text-violet-800">
+              <p className="mt-1 text-sm text-violet-200">
                 Please keep this tab open. The first request can take a few
                 minutes.
               </p>
             </div>
             )}
 
-            {result && (
-            <button
-              type="button"
-              onClick={downloadReport}
-              disabled={isDownloading}
-                className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-3.5 font-semibold disabled:opacity-50"
-              >
-                {isDownloading ? (
-                  <>
-                    <Loader2 className="h-5 w-5 animate-spin" />
-                    Creating report
-                  </>
-                ) : (
-                  <>
-                    <Download className="h-5 w-5" />
-                    Download PDF report
-                  </>
-                )}
-              </button>
-            )}
           </div>
 
-          <div className="flex gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4">
-            <ShieldAlert className="h-5 w-5 shrink-0 text-amber-700" />
-            <p className="text-sm leading-6 text-amber-900">
+          <div className="flex gap-3 rounded-2xl border border-amber-400/30 bg-amber-500/10 p-4">
+            <ShieldAlert className="h-5 w-5 shrink-0 text-amber-300" />
+            <p className="text-sm leading-6 text-amber-100">
               Educational research use only. This model does not diagnose
               fractures or specific conditions.
             </p>
@@ -317,22 +318,25 @@ export default function BoneAnalyzer() {
 
         <div className="space-y-6">
           {!result ? (
-            <div className="flex min-h-[520px] items-center justify-center rounded-[2rem] border border-slate-200 bg-white p-8 text-center shadow-sm">
+            <div className="flex min-h-[520px] items-center justify-center rounded-[2rem] border border-white/10 bg-white/[0.03] p-8 text-center shadow-sm">
               {isAnalyzing ? (
                 <div>
-                  <Loader2 className="mx-auto h-10 w-10 animate-spin text-violet-700" />
+                  <Loader2 className="mx-auto h-10 w-10 animate-spin text-sky-300" />
                   <h2 className="mt-5 text-2xl font-semibold">Analyzing image</h2>
-                  <p className="mt-2 text-sm text-slate-500">
+                  <p className="mt-2 text-sm text-slate-400">
                     We are processing your X-ray. This may take a few minutes.
                   </p>
                 </div>
               ) : (
                 <div>
-                  <Bone className="mx-auto h-9 w-9 text-violet-700" />
-                  <h2 className="mt-5 text-2xl font-semibold">
+                  <div className="relative mx-auto h-56 w-44 overflow-hidden rounded-2xl border border-white/10 shadow-[0_20px_60px_-20px_rgba(56,189,248,0.5)]">
+                    <HandXray className="h-full w-full" />
+                    <div className="scan-line" />
+                  </div>
+                  <h2 className="mt-6 text-2xl font-semibold">
                     Results will appear here
                   </h2>
-                  <p className="mt-2 text-sm text-slate-500">
+                  <p className="mt-2 text-sm text-slate-400">
                     Upload a supported musculoskeletal radiograph to begin.
                   </p>
                 </div>
@@ -340,19 +344,19 @@ export default function BoneAnalyzer() {
             </div>
           ) : (
             <>
-              <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
-                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-violet-700">
+              <div className="fade-up rounded-[2rem] border border-white/10 bg-white/[0.03] p-6 shadow-sm">
+                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-sky-300">
                   Study
                 </p>
                 <div className="mt-4 flex flex-wrap items-end justify-between gap-5">
                   <div>
                     <h2 className="text-3xl font-semibold">{result.study.type}</h2>
-                    <p className="mt-2 text-sm text-slate-500">
+                    <p className="mt-2 text-sm text-slate-400">
                       Body-region confidence {result.study.body_part_display_score}
                     </p>
                   </div>
-                  <div className="rounded-2xl bg-slate-50 px-4 py-3 text-right">
-                    <p className="text-xs text-slate-500">Body-part accuracy</p>
+                  <div className="rounded-2xl bg-white/[0.04] px-4 py-3 text-right">
+                    <p className="text-xs text-slate-400">Body-part accuracy</p>
                     <p className="mt-1 text-2xl font-semibold">
                       {(result.study.body_part_validation_accuracy * 100).toFixed(1)}%
                     </p>
@@ -366,9 +370,9 @@ export default function BoneAnalyzer() {
                         <span>{prediction.name}</span>
                         <span>{prediction.display_score}</span>
                       </div>
-                      <div className="mt-2 h-2 rounded-full bg-slate-100">
+                      <div className="mt-2 h-2 rounded-full bg-white/10">
                         <div
-                          className="h-full rounded-full bg-violet-500"
+                          className="bar-grow h-full rounded-full bg-gradient-to-r from-sky-400 to-violet-400"
                           style={{ width: `${Math.max(1, prediction.score * 100)}%` }}
                         />
                       </div>
@@ -377,24 +381,24 @@ export default function BoneAnalyzer() {
                 </div>
               </div>
 
-              <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
-                <p className="text-sm text-slate-500">Abnormality output</p>
+              <div className="fade-up rounded-[2rem] border border-white/10 bg-white/[0.03] p-6 shadow-sm">
+                <p className="text-sm text-slate-400">Abnormality output</p>
                 <div className="mt-3 flex flex-wrap items-start justify-between gap-5">
                   <div>
                     <p className="text-5xl font-semibold tracking-tight">
                       {result.abnormality.display_score}
                     </p>
-                    <p className="mt-2 text-sm text-slate-500">
+                    <p className="mt-2 text-sm text-slate-400">
                       Decision threshold {result.abnormality.display_threshold}
                     </p>
                   </div>
                   <div
                     className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-semibold ${
                       positive
-                        ? "border-rose-200 bg-rose-50 text-rose-700"
+                        ? "border-rose-400/30 bg-rose-500/10 text-rose-300"
                         : negative
-                        ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                        : "border-amber-200 bg-amber-50 text-amber-700"
+                        ? "border-emerald-400/30 bg-emerald-500/10 text-emerald-300"
+                        : "border-amber-400/30 bg-amber-500/10 text-amber-300"
                     }`}
                   >
                     <StatusIcon className="h-4 w-4" />
@@ -411,9 +415,9 @@ export default function BoneAnalyzer() {
                 ].map(([label, value]) => (
                   <div
                     key={String(label)}
-                    className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+                    className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 shadow-sm"
                   >
-                    <p className="text-sm text-slate-500">{String(label)}</p>
+                    <p className="text-sm text-slate-400">{String(label)}</p>
                     <p className="mt-2 text-2xl font-semibold">
                       {typeof value === "number" ? value.toFixed(3) : "—"}
                     </p>
@@ -422,8 +426,8 @@ export default function BoneAnalyzer() {
               </div>
 
               <div className="grid gap-6 xl:grid-cols-2">
-                <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
-                  <p className="text-sm font-semibold text-slate-500">
+                <div className="fade-up rounded-[2rem] border border-white/10 bg-white/[0.03] p-6 shadow-sm">
+                  <p className="text-sm font-semibold text-slate-400">
                     Original X-ray
                   </p>
                   {previewUrl && (
@@ -435,27 +439,27 @@ export default function BoneAnalyzer() {
                   )}
                 </div>
 
-                <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="fade-up rounded-[2rem] border border-white/10 bg-white/[0.03] p-6 shadow-sm">
                   <div className="flex items-center justify-between">
-                    <p className="text-sm font-semibold text-slate-500">
+                    <p className="text-sm font-semibold text-slate-400">
                       Grad-CAM overlay
                     </p>
-                    <Flame className="h-4 w-4 text-violet-700" />
+                    <Flame className="h-4 w-4 text-sky-300" />
                   </div>
                   <img
                     src={`data:image/png;base64,${result.gradcam.image_base64}`}
                     alt="Grad-CAM"
                     className="mt-4 aspect-square w-full rounded-2xl bg-black object-contain"
                   />
-                  <p className="mt-3 text-xs leading-5 text-slate-500">
+                  <p className="mt-3 text-xs leading-5 text-slate-400">
                     {result.gradcam.explanation}
                   </p>
                 </div>
               </div>
 
-              <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="fade-up rounded-[2rem] border border-white/10 bg-white/[0.03] p-6 shadow-sm">
                 <h3 className="text-xl font-semibold">Interpretation</h3>
-                <p className="mt-4 leading-7 text-slate-700">
+                <p className="mt-4 leading-7 text-slate-300">
                   {result.interpretation}
                 </p>
               </div>
