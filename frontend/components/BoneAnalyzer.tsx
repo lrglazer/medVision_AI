@@ -212,7 +212,7 @@ export default function BoneAnalyzer() {
 
       <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="space-y-5">
-          <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-6 shadow-sm">
+          <div className="fade-up rounded-[2rem] border border-white/10 bg-white/[0.03] p-6 shadow-sm">
             <div
               onDragEnter={(event) => {
                 event.preventDefault();
@@ -221,7 +221,7 @@ export default function BoneAnalyzer() {
               onDragOver={(event) => event.preventDefault()}
               onDragLeave={() => setIsDragging(false)}
               onDrop={handleDrop}
-              className={`flex min-h-72 flex-col items-center justify-center rounded-2xl border-2 border-dashed p-6 text-center transition ${
+              className={`relative flex min-h-72 flex-col overflow-hidden items-center justify-center rounded-2xl border-2 border-dashed p-6 text-center transition ${
                 isDragging
                   ? "border-sky-400 bg-sky-400/10"
                   : "border-white/15 bg-white/[0.04]"
@@ -240,6 +240,7 @@ export default function BoneAnalyzer() {
                   <p className="mt-1 text-sm text-slate-400">Maximum size: 12 MB</p>
                 </>
               )}
+              {previewUrl && isAnalyzing && <div className="scan-line" />}
 
               <label className="mt-5 inline-flex cursor-pointer items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-slate-200">
                 <FileImage className="h-4 w-4" />
@@ -339,7 +340,7 @@ export default function BoneAnalyzer() {
             </div>
           ) : (
             <>
-              <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-6 shadow-sm">
+              <div className="fade-up rounded-[2rem] border border-white/10 bg-white/[0.03] p-6 shadow-sm">
                 <p className="text-sm font-semibold uppercase tracking-[0.16em] text-sky-300">
                   Study
                 </p>
@@ -367,7 +368,7 @@ export default function BoneAnalyzer() {
                       </div>
                       <div className="mt-2 h-2 rounded-full bg-white/10">
                         <div
-                          className="h-full rounded-full bg-gradient-to-r from-sky-400 to-violet-400"
+                          className="bar-grow h-full rounded-full bg-gradient-to-r from-sky-400 to-violet-400"
                           style={{ width: `${Math.max(1, prediction.score * 100)}%` }}
                         />
                       </div>
@@ -376,7 +377,7 @@ export default function BoneAnalyzer() {
                 </div>
               </div>
 
-              <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-6 shadow-sm">
+              <div className="fade-up rounded-[2rem] border border-white/10 bg-white/[0.03] p-6 shadow-sm">
                 <p className="text-sm text-slate-400">Abnormality output</p>
                 <div className="mt-3 flex flex-wrap items-start justify-between gap-5">
                   <div>
@@ -421,7 +422,7 @@ export default function BoneAnalyzer() {
               </div>
 
               <div className="grid gap-6 xl:grid-cols-2">
-                <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-6 shadow-sm">
+                <div className="fade-up rounded-[2rem] border border-white/10 bg-white/[0.03] p-6 shadow-sm">
                   <p className="text-sm font-semibold text-slate-400">
                     Original X-ray
                   </p>
@@ -434,7 +435,7 @@ export default function BoneAnalyzer() {
                   )}
                 </div>
 
-                <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-6 shadow-sm">
+                <div className="fade-up rounded-[2rem] border border-white/10 bg-white/[0.03] p-6 shadow-sm">
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-semibold text-slate-400">
                       Grad-CAM overlay
@@ -452,7 +453,7 @@ export default function BoneAnalyzer() {
                 </div>
               </div>
 
-              <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-6 shadow-sm">
+              <div className="fade-up rounded-[2rem] border border-white/10 bg-white/[0.03] p-6 shadow-sm">
                 <h3 className="text-xl font-semibold">Interpretation</h3>
                 <p className="mt-4 leading-7 text-slate-300">
                   {result.interpretation}
