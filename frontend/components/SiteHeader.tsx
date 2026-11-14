@@ -16,17 +16,17 @@ export default function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#05070d]/80 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-3">
-          <div className="grid h-10 w-10 place-items-center rounded-2xl bg-slate-950 text-white shadow-sm">
+          <div className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-sky-400 to-violet-500 text-white shadow-sm">
             <Activity className="h-5 w-5" />
           </div>
           <div>
-            <p className="text-sm font-bold tracking-[0.16em] text-slate-950">
+            <p className="text-sm font-bold tracking-[0.16em] text-white">
               MEDVISION
             </p>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-400">
               Explainable AI for medical imaging
             </p>
           </div>
@@ -37,7 +37,7 @@ export default function SiteHeader() {
             <Link
               key={href}
               href={href}
-              className="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-950"
+              className="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/10 hover:text-white"
             >
               <Icon className="h-4 w-4" />
               {label}
@@ -48,7 +48,7 @@ export default function SiteHeader() {
         <button
           type="button"
           onClick={() => setOpen((value) => !value)}
-          className="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 lg:hidden"
+          className="grid h-10 w-10 place-items-center rounded-xl border border-white/10 lg:hidden"
           aria-label="Toggle navigation"
         >
           <Menu className="h-5 w-5" />
@@ -56,14 +56,14 @@ export default function SiteHeader() {
       </div>
 
       {open && (
-        <nav className="border-t border-slate-200 bg-white px-4 py-3 lg:hidden">
+        <nav className="border-t border-white/10 bg-white/[0.03] px-4 py-3 lg:hidden">
           <div className="mx-auto flex max-w-7xl flex-col gap-1">
             {links.map(({ href, label, icon: Icon }) => (
               <Link
                 key={href}
                 href={href}
                 onClick={() => setOpen(false)}
-                className="inline-flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100"
+                className="inline-flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-slate-300 hover:bg-white/10"
               >
                 <Icon className="h-4 w-4" />
                 {label}

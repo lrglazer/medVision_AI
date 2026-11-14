@@ -16,13 +16,13 @@ const technologies = [
 export default function AboutPage() {
   return (
     <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
-      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-violet-700">
+      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-sky-300">
         About MedVision
       </p>
       <h1 className="mt-3 max-w-4xl text-4xl font-semibold tracking-tight sm:text-5xl">
         An explainable AI platform for medical-image research
       </h1>
-      <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-600">
+      <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300">
         MedVision demonstrates an end-to-end medical-imaging workflow:
         dataset preparation, model training, validation, API development,
         explainability, structured reporting, and frontend design.
@@ -38,11 +38,11 @@ export default function AboutPage() {
           return (
             <div
               key={String(title)}
-              className="rounded-[2rem] border border-slate-200 bg-white p-7 shadow-sm"
+              className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-7 shadow-sm"
             >
-              <CardIcon className="h-6 w-6 text-violet-700" />
+              <CardIcon className="h-6 w-6 text-sky-300" />
               <h2 className="mt-5 text-xl font-semibold">{String(title)}</h2>
-              <p className="mt-3 text-sm leading-7 text-slate-600">
+              <p className="mt-3 text-sm leading-7 text-slate-300">
                 {String(text)}
               </p>
             </div>
@@ -50,9 +50,9 @@ export default function AboutPage() {
         })}
       </div>
 
-      <div className="mt-12 rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
+      <div className="mt-12 rounded-[2rem] border border-white/10 bg-white/[0.03] p-8 shadow-sm">
         <div className="flex items-center gap-3">
-          <Code2 className="h-6 w-6 text-violet-700" />
+          <Code2 className="h-6 w-6 text-sky-300" />
           <h2 className="text-2xl font-semibold">Technology stack</h2>
         </div>
 
@@ -60,10 +60,10 @@ export default function AboutPage() {
           {technologies.map(([name, description]) => (
             <div
               key={name}
-              className="rounded-2xl border border-slate-200 bg-slate-50 p-5"
+              className="rounded-2xl border border-white/10 bg-white/[0.04] p-5"
             >
               <p className="font-semibold">{name}</p>
-              <p className="mt-2 text-sm leading-6 text-slate-600">
+              <p className="mt-2 text-sm leading-6 text-slate-300">
                 {description}
               </p>
             </div>
@@ -71,8 +71,8 @@ export default function AboutPage() {
         </div>
       </div>
 
-      <div className="mt-8 flex gap-4 rounded-[2rem] border border-violet-200 bg-violet-50 p-6">
-        <Database className="mt-0.5 h-6 w-6 shrink-0 text-violet-700" />
+      <div className="mt-8 flex gap-4 rounded-[2rem] border border-violet-400/30 bg-violet-500/10 p-6">
+        <Database className="mt-0.5 h-6 w-6 shrink-0 text-sky-300" />
         <p className="leading-7 text-violet-950">
           Chest modeling uses CheXpert. Musculoskeletal modeling uses MURA.
           Displayed performance reflects this project&apos;s validation results

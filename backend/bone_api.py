@@ -20,6 +20,7 @@ from torchvision.models import densenet121
 
 from backend.study_validators import (
     BONE_VALIDATOR,
+    CHEST_VALIDATOR,
     StudyValidation,
     ValidatorUnavailableError,
 )
@@ -54,7 +55,11 @@ SKIP_BONE_VALIDATOR = env_flag(
 )
 SKIP_BONE_BODY_PART_MODEL = env_flag(
     "MEDVISION_SKIP_BONE_BODY_PART_MODEL",
-    IS_RAILWAY,
+    False,
+)
+SKIP_BONE_GRADCAM = env_flag(
+    "MEDVISION_SKIP_BONE_GRADCAM",
+    False,
 )
 
 
@@ -116,7 +121,7 @@ def load_models():
 IMAGE_SIZE = int(
     os.getenv(
         "MEDVISION_BONE_IMAGE_SIZE",
-        "128" if IS_RAILWAY else str(IMAGE_SIZE),
+        "224" if IS_RAILWAY else str(IMAGE_SIZE),
     )
 )
 
@@ -254,7 +259,19 @@ def analyze(image: Image.Image):
 
     status, threshold = classify(abnormality_score)
 
+    gradcam_available = False
     overlay = np.asarray(resized).astype(np.uint8)
+    if not SKIP_BONE_GRADCAM:
+        try:
+            start = time.time()
+            overlay = make_gradcam(array, tensor)
+            gradcam_available = True
+            print(
+                f"BONE ANALYZE: Grad-CAM finished in {time.time() - start:.2f}s",
+                flush=True,
+            )
+        except Exception as error:  # keep the result even if Grad-CAM fails
+            print(f"BONE ANALYZE: Grad-CAM failed: {error}", flush=True)
 
     if status == "Positive model finding":
         interpretation = (
@@ -285,6 +302,7 @@ def analyze(image: Image.Image):
         "status": status,
         "threshold": threshold,
         "overlay": overlay,
+        "gradcam_available": gradcam_available,
         "interpretation": interpretation,
     }
 
@@ -299,6 +317,7 @@ def bone_health():
         "classes": BODY_PART_CLASSES,
         "skip_bone_validator": SKIP_BONE_VALIDATOR,
         "skip_bone_body_part_model": SKIP_BONE_BODY_PART_MODEL,
+        "skip_bone_gradcam": SKIP_BONE_GRADCAM,
         "bone_image_size": IMAGE_SIZE,
     }
 
@@ -341,6 +360,22 @@ async def predict_bone(file: UploadFile = File(...)):
                 ),
             )
 
+        # The zero-shot bone validator cannot reliably tell a chest film from
+        # a limb film, so double-check with the trained chest validator.
+        try:
+            chest_check = CHEST_VALIDATOR.evaluate(image)
+        except ValidatorUnavailableError:
+            chest_check = None
+        if chest_check is not None and chest_check.accepted:
+            raise HTTPException(
+                status_code=422,
+                detail=(
+                    "This looks like a chest X-ray "
+                    f"(chest validator score: {chest_check.display_score}). "
+                    "Please use Chest X-ray Analysis instead."
+                ),
+            )
+
         print("BONE: analysis starting", flush=True)
         result = analyze(image)
         print("BONE: analysis finished", flush=True)
@@ -378,10 +413,14 @@ async def predict_bone(file: UploadFile = File(...)):
             },
             "interpretation": result["interpretation"],
             "gradcam": {
+                "available": result["gradcam_available"],
                 "image_base64": encode_png(result["overlay"]),
                 "explanation": (
                     "The heatmap shows image regions that influenced the "
                     "abnormality output. It is not lesion segmentation."
+                    if result["gradcam_available"]
+                    else "Heatmap unavailable for this study; showing the "
+                    "uploaded image."
                 ),
             },
             "metrics": {
