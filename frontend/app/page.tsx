@@ -14,6 +14,8 @@ import {
 import ModelStatus from "../components/ModelStatus";
 import Reveal from "../components/Reveal";
 import CountUp from "../components/CountUp";
+import XrayGallery from "../components/XrayGallery";
+import { ChestXray, HandXray } from "../components/XrayArt";
 
 const specialists = [
   {
@@ -23,6 +25,7 @@ const specialists = [
       "Screens frontal and lateral chest radiographs for 8 common findings, flags normal studies, and explains every result with a heatmap and a PDF report.",
     href: "/chest",
     icon: Activity,
+    Art: ChestXray,
     accent: "from-sky-400/30 to-sky-400/0",
     iconStyle: "bg-sky-400/15 text-sky-300",
     metric: "0.882",
@@ -36,6 +39,7 @@ const specialists = [
       "Identifies which of 7 upper-limb regions is in the image, estimates normal vs. abnormal appearance, and highlights the regions that drove the result.",
     href: "/bone",
     icon: Bone,
+    Art: HandXray,
     accent: "from-violet-400/30 to-violet-400/0",
     iconStyle: "bg-violet-400/15 text-violet-300",
     metric: "96.7%",
@@ -237,6 +241,8 @@ export default function HomePage() {
         ))}
       </section>
 
+      <XrayGallery />
+
       <section className="relative mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
         <Reveal>
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-sky-300">Specialists</p>
@@ -244,12 +250,16 @@ export default function HomePage() {
         </Reveal>
 
         <div className="mt-10 grid gap-6 lg:grid-cols-2">
-          {specialists.map(({ title, subtitle, description, href, icon: Icon, accent, iconStyle, metric, metricLabel, features }, i) => (
+          {specialists.map(({ title, subtitle, description, href, icon: Icon, Art, accent, iconStyle, metric, metricLabel, features }, i) => (
             <Reveal key={title} delay={i * 120}>
               <Link
                 href={href}
                 className="group relative block overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.03] p-8 transition duration-300 hover:-translate-y-1.5 hover:border-white/25 hover:shadow-[0_30px_80px_-30px_rgba(56,189,248,0.45)]"
               >
+                <div className="pointer-events-none absolute -right-10 top-6 h-56 w-44 overflow-hidden rounded-2xl opacity-25 transition duration-500 [mask-image:linear-gradient(to_left,black,transparent)] group-hover:opacity-60 sm:h-64 sm:w-52">
+                  <Art className="h-full w-full" />
+                  <div className="scan-line" />
+                </div>
                 <div className={`pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-gradient-to-b ${accent} blur-2xl transition duration-500 group-hover:scale-125`} />
                 <div className="relative flex items-start justify-between gap-5">
                   <div className={`grid h-14 w-14 place-items-center rounded-2xl ${iconStyle} transition duration-300 group-hover:rotate-6 group-hover:scale-110`}>

@@ -14,6 +14,7 @@ import {
   UploadCloud,
 } from "lucide-react";
 import ModelStatus from "./ModelStatus";
+import { HandXray } from "./XrayArt";
 
 type BoneResult = {
   study: {
@@ -328,8 +329,11 @@ export default function BoneAnalyzer() {
                 </div>
               ) : (
                 <div>
-                  <Bone className="mx-auto h-9 w-9 text-sky-300" />
-                  <h2 className="mt-5 text-2xl font-semibold">
+                  <div className="relative mx-auto h-56 w-44 overflow-hidden rounded-2xl border border-white/10 shadow-[0_20px_60px_-20px_rgba(56,189,248,0.5)]">
+                    <HandXray className="h-full w-full" />
+                    <div className="scan-line" />
+                  </div>
+                  <h2 className="mt-6 text-2xl font-semibold">
                     Results will appear here
                   </h2>
                   <p className="mt-2 text-sm text-slate-400">
