@@ -65,7 +65,7 @@ export default function HomePage() {
           </div>
 
           <h1 className="mt-7 max-w-4xl text-5xl font-semibold tracking-[-0.04em] text-white sm:text-6xl lg:text-7xl">
-            See what the AI <span className="gradient-text">sees</span> in every X-ray.
+            See what the AI <span className="gradient-text">sees</span> in every <span className="whitespace-nowrap">X-ray.</span>
           </h1>
 
           <p className="mt-7 max-w-xl text-lg leading-8 text-slate-300">
