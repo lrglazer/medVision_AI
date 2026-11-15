@@ -1,136 +1,76 @@
-MedVision AI
+# MedVision AI
 
-MedVision AI is a full-stack web application that analyzes chest and musculoskeletal (bone) X-ray images using deep learning. The platform provides AI-assisted image interpretation, Grad-CAM visual explanations, downloadable reports, and an intuitive web interface built for research and educational purposes.
+Full-stack X-ray analysis application with chest and musculoskeletal models, Grad-CAM visualizations, and downloadable reports. The project is intended for education and research, not clinical diagnosis or medical decision-making.
 
-Disclaimer: This project is intended for educational and research use only. It is not approved for clinical diagnosis or medical decision-making.
+## Features
 
-Features
-Chest X-ray Analysis
-Detects common thoracic abnormalities
-Normal vs. abnormal assessment
-Multi-label classification
-Grad-CAM heatmap visualization
-AI-generated interpretation
-Downloadable PDF report
-Bone X-ray Analysis
-Musculoskeletal body-part classification
-Abnormality detection
-Confidence scores
-Grad-CAM visualization
-Structured report generation
-Model Performance
-Chest Model
+- Chest image analysis, normal/abnormal assessment, and multi-label classification.
+- Musculoskeletal body-part classification and abnormality detection.
+- Confidence scores and Grad-CAM visualizations.
+- Structured interpretation and downloadable PDF reports.
 
-Dataset
+## Models and datasets
 
-CheXpert
+| Component | Dataset or architecture | Recorded validation metric |
+| --- | --- | --- |
+| Chest model | CheXpert, DenseNet-121 | See the chest model files |
+| Bone body-part classifier | MURA | Accuracy: 96.7% |
+| Bone abnormality classifier | MURA | AUC: 0.871 |
 
-Architecture
+Dataset references: CheXpert from the Stanford ML Group and MURA from Stanford. These figures describe model validation, not clinical performance.
 
-DenseNet-121
-Bone Models
+## Structure
 
-Dataset
+| Directory | Purpose |
+| --- | --- |
+| `frontend/` | Next.js, React, TypeScript, and Tailwind interface |
+| `backend/` | FastAPI service, model inference, and reporting |
+| `ai/` | Chest and bone modeling code and validation metrics |
+| `models/` | Trained model weights |
 
-MURA (Stanford)
+The model stack uses PyTorch, Torchvision, and Grad-CAM. Hosting configuration targets Vercel for the frontend and Railway for the backend.
 
-Body-Part Classifier
+## Local development
 
-Validation Accuracy: 96.7%
+Frontend:
 
-Abnormality Classifier
-
-Validation AUC: 0.871
-Tech Stack
-Frontend
-Next.js
-TypeScript
-React
-Tailwind CSS
-Backend
-FastAPI
-Python
-Deep Learning
-PyTorch
-Torchvision
-Grad-CAM
-Deployment
-Vercel (Frontend)
-Railway (Backend)
-
-Repository Structure:
-frontend/
-    Next.js application
-
-backend/
-    FastAPI API
-    Chest model
-    Bone model
-    Report generation
-
-ai/
-    Chest models
-    Bone models
-    Validation metrics
-
-models/
-    Trained model weights
-    
-Example Workflow:
-Upload a chest or bone X-ray.
-The image is validated.
-The appropriate AI model performs inference.
-Confidence scores and predictions are generated.
-Grad-CAM highlights influential image regions.
-Results are displayed.
-A PDF report can be downloaded.
-Research Datasets
-CheXpert — Stanford University
-MURA — Stanford University
-Future Improvements
-Additional imaging modalities
-More anatomical regions
-Faster inference
-User authentication
-Patient history support
-Longitudinal study comparison
-Cloud-based model optimization
-Installation
-
-Clone the repository:
-git clone https://github.com/lrglazer/medVision_AI.git
-
-Install frontend:
+```sh
 cd frontend
 npm install
 npm run dev
+```
 
-Install backend:
+Backend, in a separate terminal:
+
+```sh
 cd backend
 pip install -r requirements.txt
 uvicorn main:app --reload
-Live Demo
+```
 
-🌐 Web App: https://med-vision-maoss267a-leya3.vercel.app/
+## Analysis flow
 
-💻 GitHub: https://github.com/lrglazer/medVision_AI
+1. Upload a chest or bone X-ray.
+2. Validate the image and select the appropriate model.
+3. Run inference and generate scores.
+4. Generate a Grad-CAM visualization.
+5. Display results and provide a report download.
 
-Author
+## Planned work
 
-Leya Glazer
+Additional imaging modalities, inference performance, authentication, patient history, and longitudinal comparison.
 
-Biomedical Engineering & Computer Science Student
-The University of Texas at Dallas
+## Links
 
-License
+- [Web application](https://med-vision-maoss267a-leya3.vercel.app/)
+- [Repository](https://github.com/lrglazer/medVision_AI)
 
-This project is licensed under the MIT License.
+## Author
 
-Acknowledgments
-Stanford ML Group for the CheXpert dataset
-Stanford AIMI for the MURA dataset
-PyTorch
-FastAPI
-Next.js
-Vercel
-Railway
+Leya Glazer, University of Texas at Dallas.
+
+## License and acknowledgments
+
+This project is licensed under the MIT License. See the repository's license notice.
+
+Acknowledgments: Stanford ML Group, Stanford AIMI, PyTorch, FastAPI, Next.js, Vercel, and Railway.
